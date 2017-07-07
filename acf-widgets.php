@@ -1,8 +1,9 @@
 <?php
+
 /**
  * Register the new widget classes here so that they show up in the widget list.
  */
-add_action('widgets_init', 'crb_register_widgets');
+add_action( 'widgets_init', 'crb_register_widgets' );
 function crb_register_widgets() {
 	register_widget( 'Crb_Widget_Rich_Text' );
 	// register_widget( 'Crb_Widget_Latest_Tweets' );
@@ -20,17 +21,17 @@ class Carbon_ACF_Widget extends WP_Widget {
 	public function widget( $args, $instance ) {
 		// output
 		echo $args['before_widget'];
-		$this->front_end($args, $instance);
+		$this->front_end( $args, $instance );
 		echo $args['after_widget'];
 	}
 
-	function front_end($args, $instance) { }
+	function front_end( $args, $instance ) { }
 
 	public static function get_widget_meta( $widget_id, $meta_key ) {
 		if (
-			!self::exists()
-			|| !$meta_key
-			|| !$widget_id
+			! self::exists()
+			|| ! $meta_key
+			|| ! $widget_id
 		) {
 			return;
 		}
@@ -39,7 +40,7 @@ class Carbon_ACF_Widget extends WP_Widget {
 	}
 
 	public static function exists() {
-		return class_exists('Acf');
+		return class_exists( 'Acf' );
 	}
 }
 
@@ -64,13 +65,13 @@ class Crb_Widget_Rich_Text extends Carbon_ACF_Widget {
 		);
 
 		// outputs the content of the widget
-		if ($fields['title']) {
+		if ( $fields['title'] ) {
 			echo $args['before_title'] . $fields['title'] . $args['after_title'];
 		}
 
 		?>
 		<div class="widget-body">
-			<?php echo apply_filters('the_content', $fields['content']); ?>
+			<?php echo apply_filters( 'the_content', $fields['content'] ); ?>
 		</div><!-- /.widget-body -->
 		<?php
 	}
@@ -90,7 +91,7 @@ class Crb_Widget_Latest_Tweets extends Carbon_ACF_Widget {
 
 	public function front_end( $args, $instance ) {
 		// outputs the content of the widget
-		if ( !carbon_twitter_is_configured() ) {
+		if ( ! carbon_twitter_is_configured() ) {
 			return; //twitter settings are not configured
 		}
 
@@ -100,21 +101,21 @@ class Crb_Widget_Latest_Tweets extends Carbon_ACF_Widget {
 			'count' => Carbon_ACF_Widget::get_widget_meta( $widget_id, 'count' ),
 		);
 
-		$tweets = TwitterHelper::get_tweets($instance['username'], $instance['count']);
-		if (empty($tweets)) {
+		$tweets = TwitterHelper::get_tweets( $instance['username'], $instance['count'] );
+		if ( empty( $tweets ) ) {
 			return; //no tweets, or error while retrieving
 		}
 
-		if ($instance['title']) {
-			$title = apply_filters('widget_title', $instance['title'], $instance, $this->id_base);
+		if ( $instance['title'] ) {
+			$title = apply_filters( 'widget_title', $instance['title'], $instance, $this->id_base );
 
 			echo $args['before_title'] . $title . $args['after_title'];
 		}
 		?>
 		<div class="widget-body">
 			<ul>
-				<?php foreach ($tweets as $tweet): ?>
-					<li><?php echo $tweet->tweet_text; ?> - <span><?php printf(__('%1$s ago', 'crb'), $tweet->time_distance); ?></span></li>
+				<?php foreach ( $tweets as $tweet ): ?>
+					<li><?php echo $tweet->tweet_text; ?> - <span><?php printf( __( '%1$s ago', 'crb' ), $tweet->time_distance ); ?></span></li>
 				<?php endforeach ?>
 			</ul>
 		</div><!-- /.widget-body -->
